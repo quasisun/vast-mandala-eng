@@ -141,5 +141,4 @@ st.markdown("""
 ---
 
 App by **S. A. Kreuzer**  
-All rights reserved.
 """)
