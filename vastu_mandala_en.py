@@ -20,7 +20,7 @@ zone_coords = {
     4: [(1,1), (3,1), (9,1), (9,3), (1,7), (1,9), (7,9), (9,9)]
 }
 
-# Planet information
+# Planetary info
 planet_info = {
     1: ("Sun", "ruby", "leadership, authority, clarity"),
     2: ("Moon", "light blue", "emotion, softness, intuition"),
@@ -33,14 +33,14 @@ planet_info = {
     9: ("Mars", "scarlet", "energy, action, intensity")
 }
 
-# Reduce number to a single digit
+# Reduce to single digit, default to 9 if 0
 def reduce_to_digit(value):
     total = sum(int(d) for d in str(value) if d.isdigit())
     while total > 9:
         total = sum(int(d) for d in str(total))
-    return total
+    return total if total > 0 else 9
 
-# Draw the grid with colors
+# Draw 9x9 grid
 def draw_grid(colors):
     zone_map = np.zeros((9, 9), dtype=int)
     for zone, coords in zone_coords.items():
@@ -63,23 +63,24 @@ def draw_grid(colors):
     plt.grid(True)
     st.pyplot(fig)
 
-# UI
+# Interface
 st.title("Personalized Vastu Mandala")
 
 st.markdown("""
-Enter the coordinates of your home, plot, apartment, or workspace.  
-You can find coordinates using [this online tool](https://snipp.ru/tools/address-coord).  
-Copy and paste the latitude and longitude below.
+Enter the coordinates of your home, land, or workplace.  
+You can find your coordinates via [this site](https://snipp.ru/tools/address-coord).  
+Paste your **latitude** and **longitude** below.
 
-Each zone of the mandala corresponds to a planetary influence and is assigned a color:
+This tool will calculate:
+- 4 numbers from your coordinates (degrees and minutes),
+- Reduce each to a digit (1–9),
+- Show the corresponding planetary energies.
 
-- The degree and minute values are reduced to single-digit numbers (1–9),
-- Each number corresponds to a Vedic planet,
-- You will see the colors and meanings for your specific location.
+Each sector of the mandala is then colored accordingly.
 """)
 
-lat_input = st.text_input("Latitude (e.g., 65.026802)", "65.026802")
-lon_input = st.text_input("Longitude (e.g., 35.709128)", "35.709128")
+lat_input = st.text_input("Latitude", "0.0000")
+lon_input = st.text_input("Longitude", "0.0000")
 
 if st.button("Generate Mandala"):
     try:
@@ -96,35 +97,42 @@ if st.button("Generate Mandala"):
         z3 = reduce_to_digit(lat_min)
         z4 = reduce_to_digit(lon_min)
 
-        st.markdown(f"### Zone Interpretation")
-        st.markdown(f"**Zone 1 (Latitude Degrees): {z1}** — {planet_info[z1][0]} | {planet_info[z1][1]}, {planet_info[z1][2]}")
-        st.markdown(f"**Zone 2 (Longitude Degrees): {z2}** — {planet_info[z2][0]} | {planet_info[z2][1]}, {planet_info[z2][2]}")
-        st.markdown(f"**Zone 3 (Latitude Minutes): {z3}** — {planet_info[z3][0]} | {planet_info[z3][1]}, {planet_info[z3][2]}")
-        st.markdown(f"**Zone 4 (Longitude Minutes): {z4}** — {planet_info[z4][0]} | {planet_info[z4][1]}, {planet_info[z4][2]}")
+        st.markdown("### Zone Interpretations")
+        for zn, label in zip([z1, z2, z3, z4], [
+            "Zone 1 (Latitude Degrees)",
+            "Zone 2 (Longitude Degrees)",
+            "Zone 3 (Latitude Minutes)",
+            "Zone 4 (Longitude Minutes)"
+        ]):
+            if zn in planet_info:
+                name, color, trait = planet_info[zn]
+                st.markdown(f"**{label}: {zn}** — {name} | {color}, {trait}")
+            else:
+                st.markdown(f"**{label}: {zn}** — No planetary interpretation available.")
 
         draw_grid({1: z1, 2: z2, 3: z3, 4: z4})
 
         if any(z in [4, 7, 8, 9] for z in [z1, z2, z3, z4]):
-            st.warning("Your mandala includes challenging planetary zones (Rahu, Ketu, Saturn, or Mars).")
-            st.markdown("**Recommended remedies:** use sunlight, candles, mantras, sacred symbols, natural materials (wood, cotton, stone), and avoid overuse of dark or intense colors in interiors.")
+            st.warning("One or more zones are ruled by Rahu, Ketu, Saturn, or Mars — potential instability or challenges.")
+            st.markdown("**Suggested remedies:** more light, fire, mantras, natural fabrics and textures, avoid overly dark or synthetic colors in decor.")
 
         st.markdown("""
 ---
 
-### How the Calculation Works
+### How it works
 
-- We split the latitude and longitude into degrees and minutes,
-- Each value is summed into a single-digit number (1–9),
-- These numbers correspond to the 9 Vedic planets,
-- We use a traditional South Indian swastika-based Vastu mandala (9×9 zones).
+- Latitude and longitude are split into degrees and minutes,
+- Each part is reduced to a single digit from 1–9,
+- These digits correspond to planetary influences,
+- The 9×9 grid is colored according to those energies.
 
 ---
 
-### How to Use Your Mandala
-- Generate your mandala and review the planetary zones,
-- Save or print the image,
-- Place it on a wall in your home or workspace (with **north at the top**),
-- Decorate or energize zones using the suggested planetary colors, mantras, incense, or symbols.
+### How to use your mandala
+
+- Print or screenshot the grid,
+- Hang it with north at the top,
+- Use the planetary colors and meanings to harmonize interior zones with paint, light, fabric, symbols or mantras.
 """)
 
     except ValueError:
@@ -133,8 +141,8 @@ if st.button("Generate Mandala"):
 st.markdown("""
 ---
 
-🔍 For a full personalized interpretation and vastu consultation, you can [book a session here](https://goroskop1008.ru/uslugi/#consult#!/tproduct/842449103-1607970659374)
+🔍 For full interpretation and vastu consultation, visit [this link](https://goroskop1008.ru/uslugi/#consult#!/tproduct/842449103-1607970659374)
 
-🛠️ Application developed by **S. A. Kreutzer**  
+🛠️ App by **S. A. Kreutzer**  
 All rights reserved.
 """)
