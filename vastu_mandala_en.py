@@ -64,7 +64,7 @@ def draw_grid(colors):
     st.pyplot(fig)
 
 # Interface
-st.title("Personalized Vastu Mandala")
+st.title("Personalized Vastu Purusha Mandala")
 
 st.markdown("""
 Enter the coordinates of your home, land, or workplace.   
