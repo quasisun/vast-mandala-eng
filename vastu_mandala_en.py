@@ -141,8 +141,8 @@ if st.button("Generate Mandala"):
 st.markdown("""
 ---
 
-🔍 For full interpretation and vastu consultation, visit [this link](https://goroskop1008.ru/uslugi/#consult#!/tproduct/842449103-1607970659374)
+For full interpretation and vastu consultation, visit [this link](https://goroskop1008.ru/uslugi/#consult#!/tproduct/842449103-1607970659374)
 
-🛠️ App by **S. A. Kreutzer**  
+App by **S. A. Kreuzer**  
 All rights reserved.
 """)
